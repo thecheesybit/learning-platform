@@ -16,6 +16,7 @@
 
 .banned-image {
   max-width: 500px;
+  height: auto;
   margin-bottom: 20px;
 }
 
@@ -27,9 +28,50 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  max-width: 4%;
+  margin-top: 20px; /* Space between button and note */
+  display: inline;
+  max-width: fit-content; /* Ensure it only takes up necessary width */
 }
 
 .small-logout-button:hover {
+  background-color: #ff1a1a;
+}
+
+.de-register-note {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #b0b0b0; /* Lighter text color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.de-register-checkbox {
+  margin-left: 10px;
+}
+
+.de-register-button {
+  padding: 5px 10px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  background-color: #ff4b4b; /* Red color for emphasis */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px; /* Space between note and button */
+  display: inline;
+  max-width: fit-content;/* Ensure it only takes up necessary width */
+}
+
+.de-register-button.active {
+  color: #fff; /* White text color when active */
+}
+
+.de-register-button:disabled {
+  background-color: #b0b0b0; /* Grey color when disabled */
+  cursor: not-allowed;
+}
+
+.de-register-button:hover {
   background-color: #ff1a1a;
 }
