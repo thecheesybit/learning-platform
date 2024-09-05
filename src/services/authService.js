@@ -1,4 +1,5 @@
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+// authService.js
+import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../firebase'; // Import firebaseConfig
 
@@ -6,4 +7,15 @@ import { firebaseConfig } from '../firebase'; // Import firebaseConfig
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword };
+// Set up persistence
+const setAuthPersistence = () => {
+  return setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      console.log("Persistence set to browser local");
+    })
+    .catch((error) => {
+      console.error('Persistence setting error', error);
+    });
+};
+
+export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, setAuthPersistence };

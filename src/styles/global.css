@@ -87,6 +87,7 @@ button {
   color: var(--button-text);
   border: none;
   cursor: pointer;
+  max-width:fit-content;
 }
 
 button:hover {

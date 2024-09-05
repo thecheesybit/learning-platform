@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase'; // Ensure correct import
+import { auth, setAuthPersistence } from '../../firebase'; // Correct import
 import { useLoading } from '../../context/LoadingContext'; // Import useLoading hook
 import '../../styles/global.css';  // Import global styles
 import loginImage from '../../assets/images/l.gif'; // Import image
@@ -17,6 +17,10 @@ const Login = () => {
     e.preventDefault();
     showLoading(); // Show loading screen
     try {
+      // Ensure persistence is set before login
+      await setAuthPersistence();
+
+      // Proceed with signing in the user
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (err) {

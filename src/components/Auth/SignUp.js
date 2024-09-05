@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { auth, firestore } from '../../firebase'; // Ensure correct import
+import { auth, firestore, setAuthPersistence } from '../../firebase'; // Correct import
 import '../../styles/global.css';  // Import global styles
 import signupImage from '../../assets/images/signUp.gif'; // Import image
 import { useLoading } from '../../context/LoadingContext'; // Import useLoading hook
@@ -27,6 +27,9 @@ const SignUp = () => {
         hideLoading(); // Hide loading screen
         return;
       }
+
+      // Ensure persistence is set before sign up
+      await setAuthPersistence();
 
       // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
