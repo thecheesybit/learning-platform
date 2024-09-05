@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, setPersistence, browserLocalPersistence  } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
@@ -17,20 +17,21 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export Firebase services
+// Initialize Firebase services
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
 
-// Set up persistence
+// Set up authentication persistence
 const setAuthPersistence = () => {
   return setPersistence(auth, browserLocalPersistence)
     .then(() => {
       console.log("Persistence set to browser local");
     })
     .catch((error) => {
-      console.error('Persistence setting error', error);
+      console.error("Error setting persistence:", error);
     });
-}
+};
 
-export { auth, firestore, storage, setAuthPersistence };
+// Export Firebase services and functions
+export { auth, firestore, storage, setAuthPersistence, doc, getDoc, onAuthStateChanged };
