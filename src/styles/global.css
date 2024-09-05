@@ -126,13 +126,15 @@ button {
 
 /* Navbar styles */
 .navbar {
-  background-color: var(--bg-color);
-  padding: 10px 20px;
+  background-color: #1e1e1e; /* Slightly darker color than the background */
+  padding: 10px 80px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .navbar-menu {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between; /* Space items evenly with space between */
+  align-items: center; /* Center items vertically */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -153,6 +155,22 @@ button {
   color: var(--primary-color);
 }
 
+.navbar-menu .logout-button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  max-width:fit-content; /* Fit button to its content */
+}
+
+.navbar-menu .logout-button:hover {
+  background-color: #1565c0;
+}
+
+/* Hide navbar animation */
 .hide-navbar .navbar {
   animation: slideUp 0.5s forwards;
 }
@@ -172,6 +190,7 @@ button {
   display: none;
 }
 
+
 .banned-container {
   display: flex;
   justify-content: center;
@@ -179,4 +198,18 @@ button {
   height: 100vh;
   text-align: center;
   color: var(--text-color);
+}
+
+
+.logout-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 1.25rem;
+  margin-left: auto; /* Push the icon to the far right */
+}
+
+.logout-icon-button:hover {
+  color: var(--primary-color);
 }

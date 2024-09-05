@@ -11,13 +11,18 @@ const ProtectedRoute = ({ children, role }) => {
   React.useEffect(() => {
     const checkUser = async () => {
       if (auth.currentUser) {
-        const userDoc = doc(getFirestore(), 'user-data', auth.currentUser.uid);
-        const docSnap = await getDoc(userDoc);
+        try {
+          const userDoc = doc(getFirestore(), 'user-data', auth.currentUser.uid);
+          const docSnap = await getDoc(userDoc);
 
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setUserData(userData);
-        } else {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setUserData(userData);
+          } else {
+            setUserData({ banned: true });
+          }
+        } catch (err) {
+          console.error('Error fetching user data', err);
           setUserData({ banned: true });
         }
       } else {
@@ -39,9 +44,10 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/waiting-for-approval" />;
   }
 
-  if (role && userData?.role !== role) {
+  if (role && userData?.role !== role && userData?.role !== 'admin') {
     return <Navigate to="/" />;
   }
+  
 
   if (userData?.unauthenticated) {
     return <Navigate to="/login" />;

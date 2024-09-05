@@ -1,8 +1,10 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getAuth, signOut } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import '../../styles/global.css';  // Import global styles
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import "../../styles/global.css"; // Import global styles
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const auth = getAuth();
@@ -15,13 +17,13 @@ const Navbar = () => {
     const fetchUserData = async () => {
       if (user) {
         try {
-          const userDocRef = doc(getFirestore(), 'user-data', user.uid);
+          const userDocRef = doc(getFirestore(), "user-data", user.uid);
           const userDocSnap = await getDoc(userDocRef);
           if (userDocSnap.exists()) {
             setUserData(userDocSnap.data());
           }
         } catch (err) {
-          console.error('Error fetching user data', err);
+          console.error("Error fetching user data", err);
         } finally {
           setLoading(false);
         }
@@ -35,10 +37,10 @@ const Navbar = () => {
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
-        navigate('/login');
+        navigate("/login");
       })
       .catch((error) => {
-        console.error('Logout error', error);
+        console.error("Logout error", error);
       });
   };
 
@@ -53,29 +55,55 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <ul className="navbar-menu">
-        {userData.role === 'admin' && (
+        {userData.role === "admin" && (
           <>
-            <li><Link to="/live-class">Live Class</Link></li>
-            <li><Link to="/recorded-classes">Recorded Classes</Link></li>
-            <li><Link to="/student-dashboard">Student Dashboard</Link></li>
-            <li><Link to="/admin-dashboard">Admin Dashboard</Link></li>
+            <li>
+              <Link to="/live-class">Live Class</Link>
+            </li>
+            <li>
+              <Link to="/recorded-classes">Recorded Classes</Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard">Teacher Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/admin-dashboard">Admin Dashboard</Link>
+            </li>
           </>
         )}
-        {userData.role === 'teacher' && (
+        {userData.role === "teacher" && (
           <>
-            <li><Link to="/live-class">Live Class</Link></li>
-            <li><Link to="/recorded-classes">Recorded Classes</Link></li>
-            <li><Link to="/teacher-dashboard">Teacher Dashboard</Link></li>
+            <li>
+              <Link to="/live-class">Live Class</Link>
+            </li>
+            <li>
+              <Link to="/recorded-classes">Recorded Classes</Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard">Teacher Dashboard</Link>
+            </li>
           </>
         )}
-        {userData.role === 'student' && (
+        {userData.role === "user" && (
           <>
-            <li><Link to="/live-class">Live Class</Link></li>
-            <li><Link to="/recorded-classes">Recorded Classes</Link></li>
-            <li><Link to="/student-dashboard">Student Dashboard</Link></li>
+            <li>
+              <Link to="/live-class">Live Class</Link>
+            </li>
+            <li>
+              <Link to="/recorded-classes">Recorded Classes</Link>
+            </li>
+            <li>
+              <Link to="/student-dashboard">Student Dashboard</Link>
+            </li>
           </>
         )}
-        {user && <li><button onClick={handleLogout}>Logout</button></li>}
+        {user && (
+          <li>
+            <button onClick={handleLogout} className="logout-icon-button">
+            <FontAwesomeIcon icon={faSignOutAlt} />
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );
