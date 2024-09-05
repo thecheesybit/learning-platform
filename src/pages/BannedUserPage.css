@@ -1,0 +1,35 @@
+.banned-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #222; /* Dark theme background */
+  color: #f1f1f1; /* Light text for contrast */
+  text-align: center;
+}
+
+.banned-container h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.banned-image {
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.small-logout-button {
+  padding: 5px 10px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  background-color: #ff4b4b; /* Red color for emphasis */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  max-width: 4%;
+}
+
+.small-logout-button:hover {
+  background-color: #ff1a1a;
+}

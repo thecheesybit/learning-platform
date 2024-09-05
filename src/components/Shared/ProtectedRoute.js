@@ -1,15 +1,50 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, role }) => {
   const auth = getAuth();
-  const location = useLocation();
-  const user = auth.currentUser;
+  const [userData, setUserData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
-  if (!user) {
-    // Redirect them to the login page if not logged in
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  React.useEffect(() => {
+    const checkUser = async () => {
+      if (auth.currentUser) {
+        const userDoc = doc(getFirestore(), 'user-data', auth.currentUser.uid);
+        const docSnap = await getDoc(userDoc);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setUserData(userData);
+        } else {
+          setUserData({ banned: true });
+        }
+      } else {
+        setUserData({ unauthenticated: true });
+      }
+      setLoading(false);
+    };
+
+    checkUser();
+  }, [auth.currentUser]);
+
+  if (loading) return <p>Loading...</p>;
+
+  if (userData?.banned) {
+    return <Navigate to="/banned" />;
+  }
+
+  if (userData?.approved === false) {
+    return <Navigate to="/waiting-for-approval" />;
+  }
+
+  if (role && userData?.role !== role) {
+    return <Navigate to="/" />;
+  }
+
+  if (userData?.unauthenticated) {
+    return <Navigate to="/login" />;
   }
 
   return children;

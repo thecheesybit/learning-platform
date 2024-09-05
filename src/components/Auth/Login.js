@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/live-class');
+      navigate('/');
     } catch (err) {
       setError(err.message);
     }

@@ -1,0 +1,94 @@
+.admin-dashboard {
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .admin-dashboard h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+  
+  .user-table {
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .user-table thead {
+    background-color: #1f1f1f;
+  }
+  
+  .user-table th, .user-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #333;
+  }
+  
+  .user-table tr:nth-child(even) {
+    background-color: #1e1e1e;
+  }
+  
+  .user-table tr:nth-child(odd) {
+    background-color: #121212;
+  }
+  
+  .user-table th {
+    color: #ffffff;
+  }
+  
+  .user-table td {
+    color: #e0e0e0;
+  }
+  
+  .user-table select {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .user-table button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  .ban-button {
+    background-color: #e53935; /* Red for ban */
+  }
+  
+  .ban-button:hover {
+    background-color: #c62828;
+  }
+  
+  .delete-button {
+    background-color: #d32f2f; /* Dark red for delete */
+  }
+  
+  .delete-button:hover {
+    background-color: #b71c1c;
+  }
+  
+  .go-back-button {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #007bff;
+    max-width: 12%; /* Blue for go back */
+  }
+  
+  .go-back-button:hover {
+    background-color: #0056b3;
+  }
+  

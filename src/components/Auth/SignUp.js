@@ -1,7 +1,9 @@
+// src/components/Auth/SignUp.js
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase'; // Ensure correct import
+import { auth, firestore } from '../../firebase'; // Ensure correct import
 import '../../styles/global.css';  // Import global styles
 import signupImage from '../../assets/images/signUp.gif'; // Import image
 
@@ -21,7 +23,20 @@ const SignUp = () => {
         setError('Invalid phone number format');
         return;
       }
-      await createUserWithEmailAndPassword(auth, email, password);
+
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user data in Firestore
+      await setDoc(doc(firestore, 'user-data', user.uid), {
+        name,
+        phone,
+        email,
+        role: 'user',  // Default role
+        approved: false // You can adjust this field based on your use case
+      });
+
       navigate('/login');
     } catch (err) {
       setError(err.message);

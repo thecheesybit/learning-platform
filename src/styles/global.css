@@ -166,3 +166,16 @@ button {
     opacity: 0;
   }
 }
+
+.hide-navbar .navbar {
+  display: none;
+}
+
+.banned-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  color: var(--text-color);
+}
