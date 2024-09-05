@@ -1,0 +1,28 @@
+/* Ensures the loading screen covers the entire viewport */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #121212; /* Semi-transparent white background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Style for the loading content */
+.loading-content {
+  text-align: center;
+}
+
+.loading-content img {
+  width: 250px; /* Adjust as needed */
+  height: 250px; /* Adjust as needed */
+}
+
+.loading-content p {
+  font-size: 1.5rem;
+  margin-top: 10px;
+}

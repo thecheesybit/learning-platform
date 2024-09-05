@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import { getAuth, deleteUser as deleteAuthUser } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import '../styles/global.css'; // Import global styles
 import './AdminDashboard.css'; // Import specific styles for AdminDashboard
@@ -66,18 +66,41 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+  
+const handleDeleteUser = async (userId) => {
+  if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    try {
+      // Fetch user data to get the user's Firebase Authentication ID
       const userDoc = doc(db, 'user-data', userId);
+      const userSnapshot = await getDoc(userDoc);
+      const userData = userSnapshot.data();
+
+      if (userData && userData.authUID) {
+        // Delete the user from Firebase Authentication using the correct UID
+        const userAuth = await auth.getUser(userData.authUID);
+        await deleteAuthUser(userAuth.uid);
+      } else {
+        console.error('No authUID found for user.');
+        alert('Failed to delete user from Authentication.');
+        return; // Exit the function if UID is not found
+      }
+
+      // Delete the user from Firestore
       await deleteDoc(userDoc);
+
       alert('User deleted successfully.');
+
       // Refresh user list
       const usersCollection = collection(db, 'user-data');
       const usersSnapshot = await getDocs(usersCollection);
       const userList = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(userList);
+    } catch (error) {
+      console.error('Error deleting user: ', error);
+      alert('Failed to delete user.');
     }
-  };
+  }
+};
 
   if (loading) return <p>Loading...</p>;
 

@@ -1,11 +1,11 @@
-// src/components/Auth/SignUp.js
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../../firebase'; // Ensure correct import
 import '../../styles/global.css';  // Import global styles
 import signupImage from '../../assets/images/signUp.gif'; // Import image
+import { useLoading } from '../../context/LoadingContext'; // Import useLoading hook
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -14,13 +14,17 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { showLoading, hideLoading } = useLoading(); // Use loading context
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    showLoading(); // Show loading screen
+
     try {
       // Validate phone number format
       if (!/^\+?[1-9]\d{1,14}$/.test(phone)) {
         setError('Invalid phone number format');
+        hideLoading(); // Hide loading screen
         return;
       }
 
@@ -34,12 +38,19 @@ const SignUp = () => {
         phone,
         email,
         role: 'user',  // Default role
-        approved: false // You can adjust this field based on your use case
+        approved: false, // You can adjust this field based on your use case
+        authUID: user.uid, // Save the authentication UID
       });
 
-      navigate('/login');
+      // Automatically log in the user
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // Redirect to home or desired page
+      navigate('/'); 
     } catch (err) {
       setError(err.message);
+    } finally {
+      hideLoading(); // Hide loading screen
     }
   };
 

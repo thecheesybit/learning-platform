@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase'; // Ensure correct import
+import { useLoading } from '../../context/LoadingContext'; // Import useLoading hook
 import '../../styles/global.css';  // Import global styles
 import loginImage from '../../assets/images/l.gif'; // Import image
 
@@ -10,14 +11,18 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { showLoading, hideLoading } = useLoading(); // Access loading functions
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    showLoading(); // Show loading screen
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (err) {
       setError(err.message);
+    } finally {
+      hideLoading(); // Hide loading screen
     }
   };
 
