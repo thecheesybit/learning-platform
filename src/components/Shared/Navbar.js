@@ -58,6 +58,9 @@ const Navbar = () => {
         {userData.role === "admin" && (
           <>
             <li>
+              <Link to="/shop">Shop</Link>
+            </li>
+            <li>
               <Link to="/live-class">Live Class</Link>
             </li>
             <li>
@@ -74,6 +77,9 @@ const Navbar = () => {
         {userData.role === "teacher" && (
           <>
             <li>
+              <Link to="/shop">Shop</Link>
+            </li>
+            <li>
               <Link to="/live-class">Live Class</Link>
             </li>
             <li>
@@ -86,6 +92,9 @@ const Navbar = () => {
         )}
         {userData.role === "user" && (
           <>
+            <li>
+              <Link to="/shop">Shop</Link>
+            </li>
             <li>
               <Link to="/live-class">Live Class</Link>
             </li>

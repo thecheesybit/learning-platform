@@ -5,7 +5,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, setAuthPersistence } from './firebase'; // Import Firebase auth and persistence
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
-import CoursePage from './pages/CoursePage';
 import LiveClassPage from './pages/LiveClassPage';
 import RecordedClassesPage from './pages/RecordedClassesPage';
 import TeacherDashboard from './pages/TeacherDashboard';
@@ -18,6 +17,7 @@ import HomePage from './pages/HomePage';
 import LoadingScreen from './components/Shared/LoadingScreen'; // Import the LoadingScreen component
 import { useLoading } from './context/LoadingContext'; // Import useLoading hook
 import './styles/global.css'; // Import global styles
+import Shop from './pages/Shop';
 
 const App = () => {
   const { loading } = useLoading(); // Access the loading state
@@ -54,9 +54,9 @@ const App = () => {
               <HomePage />
             </ProtectedRoute>
           } />
-          <Route path="/course" element={
+          <Route path="/shop" element={
             <ProtectedRoute user={user}>
-              <CoursePage />
+              <Shop />
             </ProtectedRoute>
           } />
           <Route path="/live-class" element={

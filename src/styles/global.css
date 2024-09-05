@@ -213,3 +213,28 @@ button {
 .logout-icon-button:hover {
   color: var(--primary-color);
 }
+
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto; /* Full viewport height */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  text-align: center; /* Center text horizontally */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.study-image {
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
+}
