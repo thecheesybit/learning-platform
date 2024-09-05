@@ -1,0 +1,33 @@
+/* Global styles or relevant CSS file */
+.hide-navbar .navbar {
+    display: none;
+  }
+  
+  /* Adjust the not-found-container to ensure it's centered */
+  .not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ensure it covers full viewport height */
+    text-align: center; /* Center text */
+    background-color: var(--bg-color); /* Use background color if needed */
+  }
+  
+  .not-found-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  .not-found-container h1 {
+    font-size: 3rem; /* Adjust as needed */
+    color: var(--text-color);
+    margin: 20px 0;
+  }
+  
+  .not-found-container p {
+    font-size: 1.2rem; /* Adjust as needed */
+    color: var(--text-color);
+  }
+  

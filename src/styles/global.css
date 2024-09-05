@@ -1,47 +1,168 @@
+:root {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --primary-color: #1f80e0;
+  --button-bg: #1f80e0;
+  --button-text: #ffffff;
+  --input-bg: #333333;
+  --input-text: #e0e0e0;
+  --border-color: #444444;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  display: flex;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 90%;
+  max-width: 900px;
+}
+
+.form-left, .form-right {
+  padding: 20px;
+  color: var(--text-color);
+}
+
+.form-left {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-container {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  box-sizing: border-box; /* Include padding in the width */
+}
+
+input:focus, button:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
+
+/* Titles and text centered */
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.form-right form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input, button {
+  text-align: left; /* Align text to the left inside inputs and buttons */
+}
+
+input[type="text"], input[type="tel"], input[type="email"], input[type="password"] {
+  width: calc(100% - 20px); /* Adjusting width to fit padding */
+}
+
+button {
+  width: calc(100% - 20px); /* Adjusting width to fit padding */
+  margin-top: 20px;
+}
+
+.error-text {
+  color: red;
+  margin: 10px 0;
+}
+
+/* Navbar styles */
+.navbar {
+  background-color: var(--bg-color);
+  padding: 10px 20px;
+}
+
+.navbar-menu {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu li {
+  margin: 0 15px;
+}
+
+.navbar-menu a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase; /* Capitalize navbar items */
+}
+
+.navbar-menu a:hover {
+  color: var(--primary-color);
+}
+
+.hide-navbar .navbar {
+  animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  nav {
-    background-color: #333;
-    color: white;
-    padding: 10px;
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
   }
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  nav ul li {
-    display: inline;
-    margin-right: 10px;
-  }
-  
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  h1 {
-    color: #333;
-  }
-  
-  input, button {
-    margin: 10px;
-    padding: 8px;
-  }
-  
-  button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
+}

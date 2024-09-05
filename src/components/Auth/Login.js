@@ -1,42 +1,59 @@
 import React, { useState } from 'react';
-import { auth } from '../../services/authService'; // Ensure firebase auth is properly set up
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase'; // Ensure correct import
+import '../../styles/global.css';  // Import global styles
+import loginImage from '../../assets/images/l.gif'; // Import image
 
-function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      // Redirect to dashboard or home page
-    } catch (error) {
-      console.error('Error logging in', error);
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/live-class');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div className="container">
+      <div className="form-container">
+        <div className="form-left">
+          <div className="photo-container">
+            <img src={loginImage} alt="Login Illustration" />
+          </div>
+        </div>
+        <div className="form-right">
+          <h2>Login</h2>
+          {error && <p className="error-text">{error}</p>}
+          <form onSubmit={handleLogin} className="form">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit">Login</button>
+            <p className="signup-link">Not registered? <a href="/signup">Sign Up</a></p>
+          </form>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;
