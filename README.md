@@ -100,3 +100,43 @@ All updates, including new features and bug fixes, will be recorded here.
 ---
 
 This README serves as a foundation for your project. Would you like to proceed with the code implementation, or are there any changes you'd like to make to the README first?
+
+## **Project Struc**
+learning-platform/
+│
+├── public/
+│   ├── index.html
+│   ├── favicon.ico
+│   └── manifest.json
+│
+├── src/
+│   ├── assets/
+│   │   └── images/               # Images, logos, etc.
+│   ├── components/
+│   │   ├── Auth/
+│   │   │   ├── Login.js          # Login component
+│   │   │   └── SignUp.js         # Signup component
+│   │   └── Shared/
+│   │       └── Navbar.js         # Shared navbar across pages
+│   ├── pages/
+│   │   ├── CoursePage.js         # Course details and enrollment page
+│   │   ├── LiveClassPage.js      # Jitsi integrated live class page
+│   │   ├── RecordedClassesPage.js # View for recorded classes
+│   │   ├── TeacherDashboard.js   # Dashboard for teachers
+│   │   └── StudentDashboard.js   # Dashboard for students
+│   ├── services/
+│   │   ├── authService.js        # Firebase authentication service
+│   │   └── courseService.js      # Firestore service for course management
+│   ├── styles/
+│   │   └── global.css            # Global CSS styles
+│   ├── utils/
+│   │   ├── screenProtection.js   # Utility for screen recording detection
+│   │   └── watermark.js          # Utility for adding watermarks to videos
+│   ├── App.js                    # Main App component
+│   ├── firebase.js               # Firebase configuration
+│   ├── index.js                  # Entry point for the React app
+│   └── .env                      # Environment variables for Firebase
+│
+├── .gitignore
+├── README.md                     # Project documentation
+└── package.json                  # Project dependencies
