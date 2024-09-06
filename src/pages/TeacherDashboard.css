@@ -1,0 +1,61 @@
+/* Container for the Teacher Dashboard */
+.teacher-dashboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    color: #f1f1f1;
+  }
+  
+  /* Title styling */
+  .teacher-dashboard-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1f80e0;
+    margin-bottom: 20px;
+  }
+  
+  /* Form styling */
+  .teacher-dashboard-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .teacher-dashboard-form label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .teacher-dashboard-form input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #555555;
+    background-color: #333333;
+    color: #f1f1f1;
+  }
+  
+  .teacher-dashboard-form input:focus {
+    outline: none;
+    border-color: #1f80e0;
+  }
+  
+  /* Submit button styling */
+  .schedule-button {
+    padding: 12px 0;
+    background-color: #1f80e0;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .schedule-button:hover {
+    background-color: #1565c0;
+  }
+  

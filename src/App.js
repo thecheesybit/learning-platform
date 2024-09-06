@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -6,6 +5,7 @@ import { auth, setAuthPersistence } from './firebase'; // Import Firebase auth a
 import Login from './components/Auth/Login';
 import SignUp from './components/Auth/SignUp';
 import LiveClassPage from './pages/LiveClassPage';
+import ClassPage from './pages/ClassPage';
 import RecordedClassesPage from './pages/RecordedClassesPage';
 import TeacherDashboard from './pages/TeacherDashboard';
 import StudentDashboard from './pages/StudentDashboard';
@@ -19,12 +19,20 @@ import { useLoading } from './context/LoadingContext'; // Import useLoading hook
 import './styles/global.css'; // Import global styles
 import Shop from './pages/Shop';
 
+/**
+ * App component
+ * 
+ * This component is the main entry point of the application.
+ * It handles authentication, routing, and rendering of pages.
+ */
 const App = () => {
   const { loading } = useLoading(); // Access the loading state
   const [user, setUser] = useState(null); // State to hold the authenticated user
   const [authChecked, setAuthChecked] = useState(false); // State to track if auth check is done
 
-  // Ensure persistence is set on app initialization
+  /**
+   * Ensure persistence is set on app initialization
+   */
   useEffect(() => {
     setAuthPersistence(); // Set persistence to browser local
 
@@ -37,8 +45,10 @@ const App = () => {
     return () => unsubscribe(); // Cleanup the listener on unmount
   }, []);
 
+  /**
+   * Show loading screen while auth is being checked
+   */
   if (!authChecked) {
-    // Show loading screen while auth is being checked
     return <LoadingScreen />;
   }
 
@@ -57,6 +67,11 @@ const App = () => {
           <Route path="/shop" element={
             <ProtectedRoute user={user}>
               <Shop />
+            </ProtectedRoute>
+          } />
+          <Route path="/class" element={
+            <ProtectedRoute user={user}>
+              <ClassPage />
             </ProtectedRoute>
           } />
           <Route path="/live-class" element={

@@ -1,43 +1,84 @@
 import React, { useState } from 'react';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { firestore } from '../firebase'; // Adjust this import according to your Firebase setup
+import { collection, addDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
+import './TeacherDashboard.css'; // Import the CSS file
 
 const TeacherDashboard = () => {
-  const [meetingTitle, setMeetingTitle] = useState('');
-  const [meetingDate, setMeetingDate] = useState('');
-  const [meetingTime, setMeetingTime] = useState('');
-  const db = getFirestore();
+  const [subject, setSubject] = useState('');
+  const [lesson, setLesson] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const navigate = useNavigate();
 
-  const handleScheduleMeeting = async () => {
-    const meetingUrl = `https://meet.jit.si/${meetingTitle.replace(/\s+/g, '-')}`; // Generate meeting URL
-    await addDoc(collection(db, 'meetings'), {
-      title: meetingTitle,
-      date: meetingDate,
-      time: meetingTime,
-      url: meetingUrl,
-    });
-    alert('Meeting scheduled successfully!');
+  const generateMeetingLink = (subject, lesson, date) => {
+    const token = Math.random().toString(36).substring(2, 15);
+    return `https://meet.jit.si/${subject}-${lesson}-${date}-${token}`;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const meetingLink = generateMeetingLink(subject, lesson, date);
+
+      const meetingData = {
+        subject,
+        lesson,
+        date,
+        time,
+        meetingLink,
+        status: 'scheduled',
+      };
+
+      // Add meeting to Firestore collection
+      await addDoc(collection(firestore, 'meetings'), meetingData);
+
+      alert('Meeting scheduled successfully!');
+      navigate('/live-class'); // Redirect to live class page
+    } catch (error) {
+      console.error('Error scheduling meeting:', error);
+    }
   };
 
   return (
-    <div>
-      <h2>Schedule a Meeting</h2>
-      <input
-        type="text"
-        placeholder="Meeting Title"
-        value={meetingTitle}
-        onChange={(e) => setMeetingTitle(e.target.value)}
-      />
-      <input
-        type="date"
-        value={meetingDate}
-        onChange={(e) => setMeetingDate(e.target.value)}
-      />
-      <input
-        type="time"
-        value={meetingTime}
-        onChange={(e) => setMeetingTime(e.target.value)}
-      />
-      <button onClick={handleScheduleMeeting}>Schedule Meeting</button>
+    <div className="teacher-dashboard-container">
+      <h1 className="teacher-dashboard-title">Schedule a New Class</h1>
+      <form className="teacher-dashboard-form" onSubmit={handleSubmit}>
+        <label>Subject</label>
+        <input
+          type="text"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          required
+        />
+
+        <label>Lesson Number</label>
+        <input
+          type="text"
+          value={lesson}
+          onChange={(e) => setLesson(e.target.value)}
+          required
+        />
+
+        <label>Date</label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+
+        <label>Time</label>
+        <input
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          required
+        />
+
+        <button type="submit" className="schedule-button">Schedule Meeting</button>
+      </form>
     </div>
   );
 };

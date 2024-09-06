@@ -1,0 +1,71 @@
+/* Container for the Live Class page */
+.live-class-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    color: #f1f1f1;
+  }
+  
+  /* Title styling */
+  .live-class-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1f80e0;
+  }
+  
+  /* Meeting list container */
+  .meeting-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  /* Each meeting item */
+  .meeting-item {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .meeting-item:hover {
+    transform: translateY(-5px);
+    background-color: #333333;
+  }
+  
+  /* Meeting details */
+  .meeting-details p {
+    margin: 8px 0;
+  }
+  
+  /* Button styling */
+  .join-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #1f80e0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .join-button:hover {
+    background-color: #1565c0;
+  }
+  
+  .join-button:disabled {
+    background-color: #555555;
+    cursor: not-allowed;
+  }
+  
+  .join-button.active {
+    background-color: #4caf50;
+  }
+  
