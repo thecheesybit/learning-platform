@@ -74,7 +74,7 @@ input, button {
   border-radius: 5px;
   background-color: var(--input-bg);
   color: var(--input-text);
-  box-sizing: border-box; /* Include padding in the width */
+  box-sizing: border-box;
 }
 
 input:focus, button:focus {
@@ -87,7 +87,8 @@ button {
   color: var(--button-text);
   border: none;
   cursor: pointer;
-  max-width:fit-content;
+  max-width: fit-content;
+  padding: 10px 20px; /* Increased padding for better appearance */
 }
 
 button:hover {
@@ -107,15 +108,15 @@ h2 {
 }
 
 input, button {
-  text-align: left; /* Align text to the left inside inputs and buttons */
+  text-align: left;
 }
 
 input[type="text"], input[type="tel"], input[type="email"], input[type="password"] {
-  width: calc(100% - 20px); /* Adjusting width to fit padding */
+  width: calc(100% - 20px);
 }
 
 button {
-  width: calc(100% - 20px); /* Adjusting width to fit padding */
+  width: calc(100% - 20px);
   margin-top: 20px;
 }
 
@@ -126,15 +127,15 @@ button {
 
 /* Navbar styles */
 .navbar {
-  background-color: #1e1e1e; /* Slightly darker color than the background */
+  background-color: #1e1e1e;
   padding: 10px 80px;
   border-bottom: 1px solid var(--border-color);
 }
 
 .navbar-menu {
   display: flex;
-  justify-content: space-between; /* Space items evenly with space between */
-  align-items: center; /* Center items vertically */
+  justify-content: space-between;
+  align-items: center;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -148,7 +149,7 @@ button {
   color: var(--text-color);
   text-decoration: none;
   font-weight: bold;
-  text-transform: uppercase; /* Capitalize navbar items */
+  text-transform: uppercase;
 }
 
 .navbar-menu a:hover {
@@ -163,7 +164,7 @@ button {
   border-radius: 5px;
   text-align: center;
   cursor: pointer;
-  max-width:fit-content; /* Fit button to its content */
+  max-width: fit-content;
 }
 
 .navbar-menu .logout-button:hover {
@@ -190,7 +191,6 @@ button {
   display: none;
 }
 
-
 .banned-container {
   display: flex;
   justify-content: center;
@@ -200,36 +200,45 @@ button {
   color: var(--text-color);
 }
 
-
 .logout-icon-button {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-color);
   font-size: 1.25rem;
-  margin-left: auto; /* Push the icon to the far right */
+  margin-left: auto;
 }
 
 .logout-icon-button:hover {
   color: var(--primary-color);
 }
 
-.home-screen {
+/* HomePage Styles */
+.home-page-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: auto; /* Full viewport height */
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  text-align: center; /* Center text horizontally */
+  min-height: 100vh;
 }
 
-.content {
+.home-page-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px; /* Add gap between the sections */
+}
+
+.learning-portal, .bulletin-board {
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.learning-portal {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
 }
 
@@ -237,4 +246,217 @@ button {
   margin-top: 20px;
   max-width: 100%;
   height: auto;
+  border-radius: 8px;
+}
+
+.bulletin-board {
+  display: flex;
+  flex-direction: column;
+}
+
+.bulletin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bulletin-item {
+  background-color: #2c2c2c;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.bulletin-item p {
+  margin: 10px 0;
+}
+
+.bulletin-image {
+  max-width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.bulletin-date {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.bulletin-form {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.bulletin-form input, .bulletin-form textarea, .bulletin-form button {
+  width: calc(100% - 20px);
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.bulletin-form textarea {
+  height: 100px;
+}
+
+.image-preview {
+  max-width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.delete-button {
+  background-color: #ff4c4c;
+  color: var(--button-text);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+@keyframes marquee {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+/* Additional styles in global.css */
+.bulletin-image-container {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.bulletin-image {
+  width: 100px; /* Adjust the size as needed */
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.image-preview {
+  width: 100px; /* Same size as bulletin images */
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.image-modal-content {
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 8px;
+}
+
+
+.bulletin-marquee {
+  position: relative;
+  height: 300px; /* Adjust the height based on your design */
+  overflow: hidden;
+  background-color: #222; /* Adjust as needed for your theme */
+}
+
+.bulletin-list {
+  display: flex;
+  flex-direction: column;
+  animation: marquee-vertical 20s linear infinite;
+}
+
+.bulletin-item {
+  margin-bottom: 20px;
+  background-color: #333; /* Adjust as needed for your theme */
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+@keyframes marquee-vertical {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+.bulletin-marquee:hover .bulletin-list {
+  animation-play-state: paused; /* Pause animation on hover */
+}
+
+
+.latest-bulletin {
+  background-color: #4a90e2; /* Blue background for the latest bulletin */
+  border-left: 5px solid #007bff; /* Optional: Add a left border to highlight */
+}
+
+.bulletin-item {
+  background-color: #2c2c2c;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.bulletin-image {
+  width: 100px;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.bulletin-date {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.delete-button {
+  background-color: #ff4c4c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Default state: white color for links */
+.bulletin-item a {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Hover state: optional, you can change color on hover */
+.bulletin-item a:hover {
+  color: #ffcc00; /* Example: yellow on hover */
+}
+
+/* Visited state: red after the link is clicked */
+.bulletin-item a:visited {
+  color: rgb(23, 163, 250);
 }

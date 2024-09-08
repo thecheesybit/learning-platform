@@ -55,11 +55,9 @@ const ClassPage = () => {
           enableWelcomePage: false,
           disableInviteFunctions: false,
           disableKickFunctions: false,
-          requireDisplayName: false, // Allow participants to join without entering their names
-          hideLobbyButton: true, // Hide the lobby button
-          // Disable lobby to allow instant join
+          requireDisplayName: false,
+          hideLobbyButton: true,
           enableLobby: false,
-          // Disable waiting for moderator
           disableModeration: true,
         },
         interfaceConfigOverwrite: {
