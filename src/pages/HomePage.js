@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc, collection, onSnapshot, addDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection, onSnapshot, addDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import Navbar from '../components/Shared/Navbar';
 import studyImage from '../assets/images/study.gif';
@@ -24,6 +24,7 @@ const HomePage = () => {
   const [newBulletin, setNewBulletin] = useState({ title: '', message: '', image: '' });
   const [imagePreview, setImagePreview] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [unapprovedUsers, setUnapprovedUsers] = useState([]);
   const auth = getAuth();
   const db = getFirestore();
   const storage = getStorage();
@@ -68,6 +69,26 @@ const HomePage = () => {
 
     return () => unsubscribe();
   }, [db]);
+
+  useEffect(() => {
+    if (userData?.role === 'admin') {
+      const fetchUnapprovedUsers = async () => {
+        const usersRef = collection(db, 'user-data');
+        const q = query(usersRef, where('approved', '==', false));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const usersData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUnapprovedUsers(usersData);
+        });
+
+        return () => unsubscribe();
+      };
+
+      fetchUnapprovedUsers();
+    }
+  }, [userData, db]);
 
   const handleBulletinChange = (e) => {
     const { name, value } = e.target;
@@ -193,6 +214,22 @@ const HomePage = () => {
           </div>
         )}
       </div>
+      {userData.role === 'admin' && (
+        <div className="unapproved-users-section">
+          <h2>Unapproved Users</h2>
+          <ul className="unapproved-users-list">
+            {unapprovedUsers.map(user => (
+              <li key={user.id} className="unapproved-user-item">
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Status:</strong> Unapproved</p>
+                <button onClick={() => navigate('/admin-dashboard')} className="grant-approval-button">
+                  Grant Approval
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

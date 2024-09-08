@@ -242,3 +242,19 @@ button + button {
   max-width: 100%;
   height: auto;
 }
+
+/* Forgot Password Section */
+.forgot-password-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.forgot-password-text {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.forgot-password-section button {
+  margin: 5px;
+}

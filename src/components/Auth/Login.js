@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth, setAuthPersistence } from '../../firebase'; // Correct import
 import { useLoading } from '../../context/LoadingContext'; // Import useLoading hook
@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [forgotPassword, setForgotPassword] = useState(false); // State for forgot password view
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading(); // Access loading functions
 
@@ -25,8 +26,19 @@ const Login = () => {
       navigate('/');
     } catch (err) {
       setError(err.message);
+      setForgotPassword(true); // Show forgot password option for any error
     } finally {
       hideLoading(); // Hide loading screen
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('Password reset link sent to your email');
+      setForgotPassword(false); // Hide forgot password view
+    } catch (err) {
+      alert('Error sending password reset email: ' + err.message);
     }
   };
 
@@ -40,25 +52,34 @@ const Login = () => {
         </div>
         <div className="form-right">
           <h2>Login</h2>
-          {error && <p className="error-text">{error}</p>}
-          <form onSubmit={handleLogin} className="form">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">Login</button>
-            <p className="signup-link">Not registered? <a href="/signup">Sign Up</a></p>
-          </form>
+          {error && !forgotPassword && <p className="error-text">{error}</p>}
+          {!forgotPassword ? (
+            <form onSubmit={handleLogin} className="form">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit">Login</button>
+              <p className="signup-link">Not registered? <a href="/signup">Sign Up</a></p>
+            </form>
+          ) : (
+            <div className="forgot-password-section">
+              <p className="forgot-password-text">Forgot your password?</p>
+              <p>want to receive a password reset link ?</p>
+              <button onClick={handleForgotPassword}>Send Reset Link</button>
+              <button onClick={() => setForgotPassword(false)}>Cancel</button>
+            </div>
+          )}
         </div>
       </div>
     </div>
