@@ -6,6 +6,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'fire
 import Navbar from '../components/Shared/Navbar';
 import studyImage from '../assets/images/study.gif';
 import "../styles/global.css"; // Ensure this contains dark theme styles
+import "../styles/homePage.css";
 
 // Helper function to convert URLs in text to clickable links
 const createClickableLinks = (text) => {

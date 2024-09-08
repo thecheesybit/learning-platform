@@ -1,0 +1,144 @@
+/* HomePage container */
+.home-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .home-page-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px; /* Add gap between sections */
+  }
+  
+  .learning-portal, .bulletin-board {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .learning-portal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .study-image {
+    margin-top: 20px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .bulletin-board {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Bulletin list */
+  .bulletin-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .bulletin-item {
+    background-color: #2c2c2c;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Latest bulletin background */
+  .latest-bulletin {
+    background-color: #4a90e2;
+    border-left: 5px solid #007bff;
+  }
+  
+  .bulletin-item p {
+    margin: 10px 0;
+  }
+  
+  .bulletin-image {
+    width: 100px;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+  
+  .bulletin-date {
+    font-size: 0.8rem;
+    color: #999;
+  }
+  
+  /* Marquee styles */
+  .bulletin-marquee {
+    position: relative;
+    height: 300px; /* Adjust the height */
+    overflow: hidden;
+    background-color: #222;
+  }
+  
+  .bulletin-list {
+    display: flex;
+    flex-direction: column;
+    animation: marquee-vertical 20s linear infinite;
+  }
+  
+  @keyframes marquee-vertical {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+  
+  .bulletin-marquee:hover .bulletin-list {
+    animation-play-state: paused;
+  }
+  
+  /* Bulletin form */
+  .bulletin-form {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bulletin-form input, .bulletin-form textarea, .bulletin-form button {
+    width: calc(100% - 20px);
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+  }
+  
+  .bulletin-form textarea {
+    height: 100px;
+  }
+  
+  .image-preview {
+    max-width: 100px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  /* Link styles */
+  .bulletin-item a {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  .bulletin-item a:hover {
+    color: #ffcc00;
+  }
+  
+  .bulletin-item a:visited {
+    color: rgb(23, 163, 250);
+  }
+  
