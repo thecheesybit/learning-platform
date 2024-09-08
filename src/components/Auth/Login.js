@@ -23,6 +23,9 @@ const Login = () => {
 
       // Proceed with signing in the user
       await signInWithEmailAndPassword(auth, email, password);
+
+      // Additional logic for managing sessions (e.g., logging out other sessions) can be added here
+
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -33,12 +36,15 @@ const Login = () => {
   };
 
   const handleForgotPassword = async () => {
+    showLoading(); // Show loading screen
     try {
       await sendPasswordResetEmail(auth, email);
       alert('Password reset link sent to your email');
       setForgotPassword(false); // Hide forgot password view
     } catch (err) {
       alert('Error sending password reset email: ' + err.message);
+    } finally {
+      hideLoading(); // Hide loading screen
     }
   };
 
@@ -71,11 +77,12 @@ const Login = () => {
               />
               <button type="submit">Login</button>
               <p className="signup-link">Not registered? <a href="/signup">Sign Up</a></p>
+              <p className="forgot-password-link" onClick={() => setForgotPassword(true)}>Forgot your password?</p>
             </form>
           ) : (
             <div className="forgot-password-section">
               <p className="forgot-password-text">Forgot your password?</p>
-              <p>want to receive a password reset link ?</p>
+              <p>Want to receive a password reset link?</p>
               <button onClick={handleForgotPassword}>Send Reset Link</button>
               <button onClick={() => setForgotPassword(false)}>Cancel</button>
             </div>
