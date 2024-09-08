@@ -20,10 +20,20 @@ const LiveClassPage = () => {
         ...doc.data(),
       }));
 
-      // Filter out past meetings
-      const filteredMeetings = meetingsData.filter(meeting =>
-        moment(meeting.date).isSameOrAfter(moment(), 'day') || meeting.enableForStudents
-      );
+      // Filter out past meetings and handle completion status
+      const filteredMeetings = meetingsData.filter(meeting => {
+        const meetingDateTime = moment(`${meeting.date} ${meeting.time}`);
+        const currentDateTime = moment();
+
+        // Check if meeting is past and more than 2 hours ago
+        const isMeetingOver = meetingDateTime.isBefore(currentDateTime.subtract(2, 'hours'));
+        
+        // Check if meeting is complete
+        const isMeetingCompleted = meeting.completed;
+        
+        // Return meetings that are either upcoming or enableForStudents is true
+        return (meetingDateTime.isSameOrAfter(currentDateTime) || meeting.enableForStudents) && !isMeetingCompleted;
+      });
 
       setMeetings(filteredMeetings);
       setLoading(false);
@@ -50,23 +60,35 @@ const LiveClassPage = () => {
         <p>No meetings available.</p>
       ) : (
         <div className="live-class-grid">
-          {meetings.map((meeting) => (
-            <div key={meeting.id} className="live-class-tile">
-              <div className="live-class-details">
-                <p><strong>Subject:</strong> {meeting.subject}</p>
-                <p><strong>Lesson:</strong> {meeting.lesson}</p>
-                <p><strong>Date:</strong> {meeting.date}</p>
-                <p><strong>Time:</strong> {meeting.time}</p>
-                <button
-                  className={`join-button ${meeting.enableForStudents ? '' : 'disabled'}`}
-                  onClick={() => meeting.enableForStudents && handleJoinMeeting(meeting.meetingLink)}
-                  disabled={!meeting.enableForStudents}
-                >
-                  {meeting.enableForStudents ? 'Join Meeting' : 'Not Available'}
-                </button>
+          {meetings.map((meeting) => {
+            const meetingDateTime = moment(`${meeting.date} ${meeting.time}`);
+            const currentDateTime = moment();
+            const isMeetingOver = meetingDateTime.isBefore(currentDateTime.subtract(2, 'hours'));
+            
+            return (
+              <div key={meeting.id} className="live-class-tile">
+                <div className="live-class-details">
+                  <p><strong>Subject:</strong> {meeting.subject}</p>
+                  <p><strong>Lesson:</strong> {meeting.lesson}</p>
+                  <p><strong>Date:</strong> {meeting.date}</p>
+                  <p><strong>Time:</strong> {meeting.time}</p>
+                  {meeting.completed ? (
+                    <p className="meeting-status">Meeting Completed</p>
+                  ) : isMeetingOver ? (
+                    <p className="meeting-status">Meeting Over</p>
+                  ) : (
+                    <button
+                      className={`join-button ${meeting.enableForStudents ? '' : 'disabled'}`}
+                      onClick={() => meeting.enableForStudents && handleJoinMeeting(meeting.meetingLink)}
+                      disabled={!meeting.enableForStudents}
+                    >
+                      {meeting.enableForStudents ? 'Join Meeting' : 'Not Available'}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

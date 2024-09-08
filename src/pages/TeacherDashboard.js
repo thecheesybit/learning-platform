@@ -49,6 +49,7 @@ const TeacherDashboard = () => {
         meetingLink,
         status: 'scheduled',
         enableForStudents: false,
+        completed: false, // Add completed field
       };
 
       await addDoc(collection(firestore, 'meetings'), meetingData);
@@ -103,6 +104,19 @@ const TeacherDashboard = () => {
     }
   };
 
+  const handleToggleCompleted = async (meetingId, currentStatus) => {
+    setLoading(true);
+    try {
+      const meetingRef = doc(firestore, 'meetings', meetingId);
+      await updateDoc(meetingRef, { completed: !currentStatus });
+      alert(`Meeting ${currentStatus ? 'marked as incomplete' : 'marked as complete'}!`);
+    } catch (error) {
+      console.error('Error toggling meeting completion:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInstantSchedule = async () => {
     setInstantLoading(true);
     try {
@@ -126,6 +140,7 @@ const TeacherDashboard = () => {
         meetingLink,
         status: 'scheduled',
         enableForStudents: false,
+        completed: false, // Add completed field
       };
 
       await addDoc(collection(firestore, 'meetings'), meetingData);
@@ -228,6 +243,12 @@ const TeacherDashboard = () => {
                   className={`toggle-button ${meeting.enableForStudents ? 'enabled' : 'disabled'}`}
                 >
                   {meeting.enableForStudents ? 'Disable for Students' : 'Enable for Students'}
+                </button>
+                <button
+                  onClick={() => handleToggleCompleted(meeting.id, meeting.completed)}
+                  className={`toggle-button ${meeting.completed ? 'completed' : 'incomplete'}`}
+                >
+                  {meeting.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
                 </button>
               </div>
             </li>
