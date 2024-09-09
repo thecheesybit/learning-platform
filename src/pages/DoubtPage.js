@@ -86,6 +86,10 @@ const DoubtPage = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    console.log("Fetched doubts: ", doubts);
+  }, [doubts]);
+
   const handleAddressDoubtChange = (e) => {
     const { name, value } = e.target;
     setAddressDoubt((prev) => ({ ...prev, [name]: value }));
@@ -145,7 +149,6 @@ const DoubtPage = () => {
         await addDoc(doubtDoc, {
           teacherComments: {
             text: addressDoubt.remarks,
-            // Add other teacher comments if needed
           },
           status: "Resolved",
         });
@@ -186,6 +189,8 @@ const DoubtPage = () => {
   };
 
   const renderTextWithLinks = (text) => {
+    if (!text) return null; // Return null if text is not provided
+  
     const urlRegex =
       /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     return text.split(urlRegex).map((part, index) =>
@@ -204,6 +209,7 @@ const DoubtPage = () => {
       )
     );
   };
+  
 
   return (
     <div className="student-dashboard-container">
@@ -223,13 +229,17 @@ const DoubtPage = () => {
               onChange={handleAddressDoubtChange}
             >
               <option value="">Select an unresolved doubt</option>
-              {doubts
-                .filter((doubt) => doubt.status === "Unresolved")
-                .map((doubt) => (
-                  <option key={doubt.id} value={doubt.id}>
-                    {doubt.subject}
-                  </option>
-                ))}
+              {doubts.length > 0 ? (
+                doubts
+                  .filter((doubt) => doubt.status === "Unresolved")
+                  .map((doubt) => (
+                    <option key={doubt.id} value={doubt.id}>
+                      {doubt.subject}
+                    </option>
+                  ))
+              ) : (
+                <option value="">No doubts available</option>
+              )}
             </select>
           </div>
           <div>
@@ -287,72 +297,54 @@ const DoubtPage = () => {
                       }
                     }}
                   >
-                    {document.getElementById(doubt.id)?.style.display === "none"
+                    {doubt.status === "Unresolved"
                       ? "Expand"
                       : "Collapse"}
                   </button>
                 </div>
                 <div
                   id={doubt.id}
-                  className="doubt-content"
                   style={{ display: "none" }}
+                  className="doubt-content"
                 >
-                  <p>{renderTextWithLinks(doubt.text)}</p>
-                  {doubt.image && (
-                    <div>
-                      <img
-                        src={doubt.image}
-                        alt="Doubt"
-                        className="doubt-image"
-                        onClick={() => handleImageClick(doubt.image)}
-                      />
-                    </div>
+                  <p>{renderTextWithLinks(doubt.description)}</p>
+                  {doubt.imageURL && (
+                    <img
+                      src={doubt.imageURL}
+                      alt="Doubt"
+                      onClick={() => handleImageClick(doubt.imageURL)}
+                    />
                   )}
-                  {doubt.audio && <audio controls src={doubt.audio} />}
-                  <p>
-                    Submitted by: {userDetails.name || "Loading..."} (
-                    {userDetails.phoneNumber || "Loading..."})
-                  </p>
-                  <p>
-                    Submitted on:{" "}
-                    {new Date(doubt.timestamp.toDate()).toLocaleString()}
-                  </p>
-                  <p>Status: {doubt.status}</p>
-                  {doubt.status === "Unresolved" ? (
-                    <button
-                      onClick={() =>
-                        handleDeleteDoubt(doubt.id, doubt.image, doubt.audio)
-                      }
-                    >
-                      Delete Doubt
-                    </button>
-                  ) : (
-                    <div>
+                  {doubt.audioURL && (
+                    <audio controls>
+                      <source src={doubt.audioURL} type="audio/mp3" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  )}
+                  <div>
+                    <span>Submitted by: {doubt.uid}</span>
+                  </div>
+                  {doubt.status === "Resolved" && (
+                    <div className="teacher-comments">
                       <h4>Comments by Teacher:</h4>
-                      <p>{doubt.teacherComments?.text || "No comments yet"}</p>
-                      {doubt.teacherComments?.image && (
-                        <img
-                          src={doubt.teacherComments.image}
-                          alt="Teacher Comment"
-                        />
-                      )}
-                      {doubt.teacherComments?.audio && (
-                        <audio controls src={doubt.teacherComments.audio} />
-                      )}
+                      <p>{doubt.teacherComments?.text}</p>
                     </div>
                   )}
+                  <button onClick={() => handleDeleteDoubt(doubt.id, doubt.imageURL, doubt.audioURL)}>
+                    Delete
+                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
-      </div>
 
-      {selectedImage && (
-        <div className="image-modal" onClick={handleCloseImage}>
-          <img src={selectedImage} alt="Doubt" className="modal-image" />
-        </div>
-      )}
+        {selectedImage && (
+          <div className="image-overlay" onClick={handleCloseImage}>
+            <img src={selectedImage} alt="Doubt" />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
