@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import LoadingScreen from '../components/Shared/LoadingScreen'; // Import LoadingScreen
 import './TeacherDashboard.css';
+import DoubtPage from './DoubtPage';
 
 const TeacherDashboard = () => {
   const [subject, setSubject] = useState('');
@@ -160,100 +161,109 @@ const TeacherDashboard = () => {
       <button className="go-back-button" onClick={() => navigate('/')}>
         Go Back
       </button>
-      <div className="teacher-dashboard-section">
-        <h1 className="teacher-dashboard-title">Schedule a New Class</h1>
-        <form className="teacher-dashboard-form" onSubmit={handleSubmit}>
-          <label>Subject</label>
-          <input
-            type="text"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            required
-          />
 
-          <label>Lesson Number</label>
-          <input
-            type="text"
-            value={lesson}
-            onChange={(e) => setLesson(e.target.value)}
-            required
-          />
+      <div className="teacher-dashboard-row">
+        <div className="teacher-dashboard-form-container">
+          <h1 className="teacher-dashboard-title">Schedule a New Class</h1>
+          <form className="teacher-dashboard-form" onSubmit={handleSubmit}>
+            <label>Subject</label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              required
+            />
 
-          <label>Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+            <label>Lesson Number</label>
+            <input
+              type="text"
+              value={lesson}
+              onChange={(e) => setLesson(e.target.value)}
+              required
+            />
 
-          <label>Time</label>
-          <input
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            required
-          />
+            <label>Date</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
 
-          <button type="submit" className="schedule-button" disabled={loading}>
-            {loading ? 'Scheduling...' : 'Schedule Meeting'}
-          </button>
+            <label>Time</label>
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              required
+            />
 
-          <button
-            type="button"
-            className="instant-schedule-button"
-            onClick={handleInstantSchedule}
-            disabled={instantLoading}
-          >
-            {instantLoading ? 'Scheduling...' : 'Instant Schedule'}
-          </button>
-        </form>
+            <button type="submit" className="schedule-button" disabled={loading}>
+              {loading ? 'Scheduling...' : 'Schedule Meeting'}
+            </button>
+
+            <button
+              type="button"
+              className="instant-schedule-button"
+              onClick={handleInstantSchedule}
+              disabled={instantLoading}
+            >
+              {instantLoading ? 'Scheduling...' : 'Instant Schedule'}
+            </button>
+          </form>
+        </div>
+
+        <div className="meeting-list-container">
+          <h1 className="teacher-dashboard-title">Meeting Dashboard</h1>
+          <ul className="meeting-list">
+            {meetings.map((meeting) => (
+              <li key={meeting.id} className="meeting-item">
+                <div className="meeting-details">
+                  <p><strong>Subject:</strong> {meeting.subject}</p>
+                  <p><strong>Lesson:</strong> {meeting.lesson}</p>
+                  <p><strong>Date:</strong> {meeting.date}</p>
+                  <p><strong>Time:</strong> {meeting.time}</p>
+                </div>
+                <div className="button-group">
+                  <button
+                    onClick={() => handleGeneratePassword(meeting.id)}
+                    className="generate-password-button"
+                  >
+                    Generate Password
+                  </button>
+                  <button
+                    onClick={() => handleDeleteMeeting(meeting.id)}
+                    className="delete-button"
+                  >
+                    Delete Meeting
+                  </button>
+                  <button
+                    onClick={() => handleStartMeeting(meeting.meetingLink)}
+                    className="start-meeting-button"
+                  >
+                    Start Meeting
+                  </button>
+                  <button
+                    onClick={() => handleToggleEnableForStudents(meeting.id, meeting.enableForStudents)}
+                    className={`toggle-button ${meeting.enableForStudents ? 'enabled' : 'disabled'}`}
+                  >
+                    {meeting.enableForStudents ? 'Disable for Students' : 'Enable for Students'}
+                  </button>
+                  <button
+                    onClick={() => handleToggleCompleted(meeting.id, meeting.completed)}
+                    className={`toggle-button ${meeting.completed ? 'completed' : 'incomplete'}`}
+                  >
+                    {meeting.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
-      <div className="teacher-dashboard-section">
-        <h1 className="teacher-dashboard-title">Meeting Dashboard</h1>
-        <ul className="meeting-list">
-          {meetings.map((meeting) => (
-            <li key={meeting.id} className="meeting-item">
-              <div className="meeting-details">
-                <p><strong>Subject:</strong> {meeting.subject}</p>
-                <p><strong>Lesson:</strong> {meeting.lesson}</p>
-                <p><strong>Date:</strong> {meeting.date}</p>
-                <p><strong>Time:</strong> {meeting.time}</p>
-                <button
-                  onClick={() => handleGeneratePassword(meeting.id)}
-                  className="generate-password-button"
-                >
-                  Generate Password
-                </button>
-                <button
-                  onClick={() => handleDeleteMeeting(meeting.id)}
-                  className="delete-button"
-                >
-                  Delete Meeting
-                </button>
-                <button
-                  onClick={() => handleStartMeeting(meeting.meetingLink)}
-                  className="start-meeting-button"
-                >
-                  Start Meeting
-                </button>
-                <button
-                  onClick={() => handleToggleEnableForStudents(meeting.id, meeting.enableForStudents)}
-                  className={`toggle-button ${meeting.enableForStudents ? 'enabled' : 'disabled'}`}
-                >
-                  {meeting.enableForStudents ? 'Disable for Students' : 'Enable for Students'}
-                </button>
-                <button
-                  onClick={() => handleToggleCompleted(meeting.id, meeting.completed)}
-                  className={`toggle-button ${meeting.completed ? 'completed' : 'incomplete'}`}
-                >
-                  {meeting.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div className="doubt-section">
+        <DoubtPage />
       </div>
     </div>
   );

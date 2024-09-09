@@ -1,22 +1,31 @@
 /* General container styling */
 .teacher-dashboard-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column; /* Stack sections vertically */
   gap: 20px; /* Space between the sections */
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Form styling */
-.teacher-dashboard-form-container {
-  flex: 1;
+/* Row container for side-by-side sections */
+.teacher-dashboard-row {
+  display: flex;
+  flex-direction: row; /* Align sections side by side */
+  gap: 20px; /* Space between the two side-by-side sections */
+}
+
+/* Form container styling for side-by-side sections */
+.teacher-dashboard-form-container,
+.meeting-list-container {
+  flex: 1; /* Allow both sections to grow equally */
   background-color: #1e1e1e;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Title styling */
 .teacher-dashboard-title {
   font-size: 2em;
   margin-bottom: 20px;
@@ -88,10 +97,6 @@
 }
 
 /* Meeting list styling */
-.meeting-list-container {
-  flex: 2;
-}
-
 .meeting-list {
   list-style-type: none;
   padding: 0;
@@ -137,7 +142,7 @@
   cursor: pointer;
   font-size: 0.9em;
   transition: background-color 0.3s;
-  margin:5px;
+  margin: 5px;
 }
 
 .generate-password-button:hover,
@@ -162,4 +167,13 @@
 
 .toggle-button.disabled:hover {
   background-color: #c82333;
+}
+
+/* Doubt section styling */
+.doubt-section {
+  width: 100%; /* Take full width */
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
