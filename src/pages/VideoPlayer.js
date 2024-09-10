@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { firestore, auth } from '../firebase'; // Adjust path as necessary
-// eslint-disable-next-line no-unused-vars
-import { collection, setDoc, getDoc, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDoc, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import ReactPlayer from 'react-player';
 import './RecordedClassesPage.css'; // Ensure you have this file for CSS
-import { useNavigate } from "react-router-dom";
 
 const RecordedClassesPage = () => {
   const [user] = useAuthState(auth);
   const [videoData, setVideoData] = useState([]);
-  const [newVideo, setNewVideo] = useState({ link: '', subject: '' });
+  const [newVideo, setNewVideo] = useState({ link: '', subject: '', watchTimes: 1 });
   const [error, setError] = useState('');
   const [isTeacherOrAdmin, setIsTeacherOrAdmin] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const navigate = useNavigate();
 
   // Fetch user role
   useEffect(() => {
@@ -52,6 +49,10 @@ const RecordedClassesPage = () => {
     setNewVideo((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleWatchTimesChange = (e) => {
+    setNewVideo((prev) => ({ ...prev, watchTimes: parseInt(e.target.value) }));
+  };
+
   // Upload video
   const handleUploadVideo = async () => {
     if (!newVideo.link || !newVideo.subject) {
@@ -63,9 +64,10 @@ const RecordedClassesPage = () => {
       await addDoc(collection(firestore, 'recorded-classes'), {
         ...newVideo,
         uploadTime: new Date(),
+        remainingPlays: newVideo.watchTimes,
       });
 
-      setNewVideo({ link: '', subject: '' });
+      setNewVideo({ link: '', subject: '', watchTimes: 1 });
       setError('');
     } catch (err) {
       setError('Error uploading video: ' + err.message);
@@ -73,8 +75,16 @@ const RecordedClassesPage = () => {
   };
 
   // Handle video play
-  const handlePlayVideo = (video) => {
-    setSelectedVideo(video);
+  const handlePlayVideo = async (id, video) => {
+    const videoRef = doc(firestore, 'recorded-classes', id);
+
+    if (video.remainingPlays > 0) {
+      await updateDoc(videoRef, {
+        remainingPlays: video.remainingPlays - 1,
+      });
+
+      setSelectedVideo(video);
+    }
   };
 
   // Handle close video
@@ -95,9 +105,7 @@ const RecordedClassesPage = () => {
     <div className="recorded-classes-page">
       <header>
         <h1>Recorded Classes</h1>
-        <button className="go-back-button" onClick={() => navigate(-1)}>
-          Go Back
-        </button>
+        <a href="/">Home</a>
       </header>
       {selectedVideo && (
         <div className="video-modal">
@@ -113,24 +121,28 @@ const RecordedClassesPage = () => {
       {isTeacherOrAdmin && (
         <div className="upload-form">
           <h2>Upload New Video</h2>
-          <div className="form-field">
-            <input
-              type="text"
-              name="link"
-              value={newVideo.link}
-              onChange={handleVideoChange}
-              placeholder="Video Link (YouTube/Google Drive)"
-            />
-          </div>
-          <div className="form-field">
-            <input
-              type="text"
-              name="subject"
-              value={newVideo.subject}
-              onChange={handleVideoChange}
-              placeholder="Subject/Title"
-            />
-          </div>
+          <input
+            type="text"
+            name="link"
+            value={newVideo.link}
+            onChange={handleVideoChange}
+            placeholder="Video Link (YouTube/Google Drive)"
+          />
+          <input
+            type="text"
+            name="subject"
+            value={newVideo.subject}
+            onChange={handleVideoChange}
+            placeholder="Subject/Title"
+          />
+          <input
+            type="number"
+            name="watchTimes"
+            value={newVideo.watchTimes}
+            onChange={handleWatchTimesChange}
+            min="1"
+            placeholder="Watch Times"
+          />
           <button onClick={handleUploadVideo}>Upload Video</button>
           {error && <p className="error">{error}</p>}
         </div>
@@ -140,12 +152,11 @@ const RecordedClassesPage = () => {
           <div key={video.id} className="video-item">
             <h3>{video.subject}</h3>
             <p>Uploaded on: {new Date(video.uploadTime.seconds * 1000).toLocaleDateString()}</p>
-            {user ? (
-              <div>
-                <button onClick={() => handlePlayVideo(video)}>Play Video</button>
-              </div>
+            <p>Remaining Plays: {video.remainingPlays}</p>
+            {video.remainingPlays > 0 ? (
+              <button onClick={() => handlePlayVideo(video.id, video)}>Play Video</button>
             ) : (
-              <p>Log in to watch videos</p>
+              <p>No plays remaining</p>
             )}
             {isTeacherOrAdmin && (
               <button className="delete-button" onClick={() => handleDeleteVideo(video.id)}>Delete</button>

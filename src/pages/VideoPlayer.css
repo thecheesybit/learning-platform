@@ -1,0 +1,38 @@
+/* VideoPlayer.css */
+.player-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.react-player iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Hide YouTube player UI elements */
+.react-player .ytp-chrome-bottom {
+  display: none !important; /* Hides the bottom chrome (controls) */
+}
+
+.react-player .ytp-chrome-top {
+  display: none !important; /* Hides the top chrome (title, etc.) */
+}
+
+.react-player .ytp-share-button,
+.react-player .ytp-playlist-button,
+.react-player .ytp-title,
+.react-player .ytp-fullscreen-button,
+.react-player .ytp-play-button,
+.react-player .ytp-skip-button,
+.react-player .ytp-pause-button {
+  display: none !important; /* Hides specific buttons */
+}
+
+/* Hide Google Drive player options */
+.react-player .html5-video-player .controls {
+  display: none !important; /* Hides controls in Google Drive player */
+}
