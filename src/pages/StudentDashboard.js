@@ -11,7 +11,12 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import "./StudentDashboard.css";
 
@@ -210,8 +215,9 @@ function StudentDashboard() {
 
   // Function to render text with clickable links
   const renderTextWithLinks = (text) => {
-    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.split(urlRegex).map((part, index) => 
+    const urlRegex =
+      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
+    return text.split(urlRegex).map((part, index) =>
       urlRegex.test(part) ? (
         <a
           key={index}
@@ -334,7 +340,11 @@ function StudentDashboard() {
                   </p>
                   <p>Status: {doubt.status}</p>
                   {doubt.status === "Unresolved" ? (
-                    <button onClick={() => handleDeleteDoubt(doubt.id, doubt.image, doubt.audio)}>
+                    <button
+                      onClick={() =>
+                        handleDeleteDoubt(doubt.id, doubt.image, doubt.audio)
+                      }
+                    >
                       Delete Doubt
                     </button>
                   ) : (

@@ -1,41 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { firestore, auth, storage } from "../firebase";
 import {
   collection,
-  addDoc,
+  updateDoc,
   getDoc,
   query,
-  where,
   onSnapshot,
   doc,
   deleteDoc,
 } from "firebase/firestore";
 import {
   ref,
+  deleteObject,
   uploadBytes,
   getDownloadURL,
-  deleteObject,
 } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
-import "./doubtPage.css"; // Ensure this path is correct
+import "./doubtPage.css";
 
 const DoubtPage = () => {
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [doubts, setDoubts] = useState([]);
   const [addressDoubt, setAddressDoubt] = useState({
     selectedDoubtId: "",
     remarks: "",
+    image: null,
+    audio: "",
   });
   const [audioURL, setAudioURL] = useState("");
   const [recording, setRecording] = useState(false);
   const [errorMsg, setError] = useState("");
   const [userDetails, setUserDetails] = useState({ name: "", phoneNumber: "" });
   const [selectedImage, setSelectedImage] = useState(null);
-  const [allDoubts, setAllDoubts] = useState([]);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const navigate = useNavigate();
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -56,43 +55,34 @@ const DoubtPage = () => {
 
       fetchUserData();
 
-      const userDoubtsQuery = query(
-        collection(firestore, "student-doubt"),
-        where("uid", "==", user.uid)
-      );
-
       const allDoubtsQuery = query(collection(firestore, "student-doubt"));
-
-      const unsubscribeUserDoubts = onSnapshot(userDoubtsQuery, (snapshot) => {
-        const fetchedDoubts = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setDoubts(fetchedDoubts);
-      });
 
       const unsubscribeAllDoubts = onSnapshot(allDoubtsQuery, (snapshot) => {
         const fetchedAllDoubts = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setAllDoubts(fetchedAllDoubts);
+        setDoubts(fetchedAllDoubts);
       });
 
       return () => {
-        unsubscribeUserDoubts();
         unsubscribeAllDoubts();
       };
     }
   }, [user]);
 
-  useEffect(() => {
-    console.log("Fetched doubts: ", doubts);
-  }, [doubts]);
-
   const handleAddressDoubtChange = (e) => {
     const { name, value } = e.target;
     setAddressDoubt((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size <= 1024 * 1024) {
+      setImageFile(file); // Set the image file for upload
+    } else {
+      alert("Image must be less than 1MB.");
+    }
   };
 
   const handleAudioStart = async () => {
@@ -116,6 +106,7 @@ const DoubtPage = () => {
         });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioURL(audioUrl);
+        setAddressDoubt((prev) => ({ ...prev, audio: audioUrl }));
         audioChunksRef.current = [];
       };
 
@@ -133,82 +124,93 @@ const DoubtPage = () => {
     }
   };
 
+  const handleDeleteDoubt = async (id, imageURL, audioURL) => {
+    if (window.confirm("Are you sure you want to delete this doubt?")) {
+      try {
+        // If an image URL is associated with the doubt, delete the image from storage
+        if (imageURL) {
+          const imageRef = ref(storage, imageURL);
+          await deleteObject(imageRef);
+        }
+  
+        // If an audio URL is associated with the doubt, delete the audio file from storage
+        if (audioURL) {
+          const audioRef = ref(storage, audioURL);
+          await deleteObject(audioRef);
+        }
+  
+        // Delete the doubt document from Firestore
+        await deleteDoc(doc(firestore, "student-doubt", id));
+        alert("Doubt deleted successfully.");
+      } catch (err) {
+        console.error("Error deleting doubt: ", err.message);
+        alert("Failed to delete doubt.");
+      }
+    }
+  };
+  
+  const uploadImageToStorage = async (imageFile) => {
+    if (!imageFile) return null;
+
+    const storageRef = ref(storage, `doubt-images/${Date.now()}-${imageFile.name}`);
+    const snapshot = await uploadBytes(storageRef, imageFile);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  };
+
+  // const uploadAudioToStorage = async (audioBlob) => {
+  //   if (!audioBlob) return null;
+
+  //   const storageRef = ref(storage, `doubt-audio/${Date.now()}.mp3`);
+  //   const snapshot = await uploadBytes(storageRef, audioBlob);
+  //   const downloadURL = await getDownloadURL(snapshot.ref);
+  //   return downloadURL;
+  // };
+
   const handleResolveDoubt = async () => {
     if (!addressDoubt.selectedDoubtId || !addressDoubt.remarks) {
       setError("Please select a doubt and add remarks.");
       return;
     }
 
+    const selectedDoubtRef = doc(firestore, "student-doubt", addressDoubt.selectedDoubtId);
+
     if (window.confirm("Are you sure you want to resolve this doubt?")) {
       try {
-        const doubtDoc = doc(
-          firestore,
-          "student-doubt",
-          addressDoubt.selectedDoubtId
+        const imageUrl = await uploadImageToStorage(imageFile);
+        let audioUrl = null;
+
+        if (addressDoubt.audio) {
+          const audioBlob = await fetch(addressDoubt.audio).then((res) =>
+            res.blob()
         );
-        await addDoc(doubtDoc, {
-          teacherComments: {
-            text: addressDoubt.remarks,
-          },
+        const audioRef = ref(
+          storage,
+          `audios/${Date.now()}_${addressDoubt.audio.split("/").pop()}`
+        );
+        await uploadBytes(audioRef, audioBlob);
+        audioUrl = await getDownloadURL(audioRef);
+      }
+
+        await updateDoc(selectedDoubtRef, {
+          "teacherComments.text": addressDoubt.remarks,
+          "teacherComments.image": imageUrl || null,
+          "teacherComments.audio": audioUrl || null,
           status: "Resolved",
         });
+
+        // Reset state after resolving the doubt
         setAddressDoubt({ selectedDoubtId: "", remarks: "" });
-        setError("");
+        setImageFile(null);
+        setAudioURL("");
+        alert("Doubt resolved successfully!");
       } catch (err) {
+        console.error("Error resolving doubt: ", err.message);
         setError("Error resolving doubt: " + err.message);
       }
     }
   };
-
-  const handleDeleteDoubt = async (id, imageURL, audioURL) => {
-    if (window.confirm("Are you sure you want to delete this doubt?")) {
-      try {
-        if (imageURL) {
-          const imageRef = ref(storage, imageURL);
-          await deleteObject(imageRef);
-        }
-
-        if (audioURL) {
-          const audioRef = ref(storage, audioURL);
-          await deleteObject(audioRef);
-        }
-
-        await deleteDoc(doc(firestore, "student-doubt", id));
-      } catch (err) {
-        alert("Error deleting doubt: " + err.message);
-      }
-    }
-  };
-
-  const handleImageClick = (imageURL) => {
-    setSelectedImage(imageURL);
-  };
-
-  const handleCloseImage = () => {
-    setSelectedImage(null);
-  };
-
-  const renderTextWithLinks = (text) => {
-    if (!text) return null; // Return null if text is not provided
   
-    const urlRegex =
-      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.split(urlRegex).map((part, index) =>
-      urlRegex.test(part) ? (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="link"
-        >
-          {part}
-        </a>
-      ) : (
-        part
-      )
-    );
-  };
   
 
   return (
@@ -238,11 +240,12 @@ const DoubtPage = () => {
                     </option>
                   ))
               ) : (
-                <option value="">No doubts available</option>
+                <option value="">No unresolved doubts available</option>
               )}
             </select>
           </div>
           <div>
+            <br />
             <label>Add Remarks:</label>
             <textarea
               name="remarks"
@@ -251,26 +254,28 @@ const DoubtPage = () => {
               onChange={handleAddressDoubtChange}
             />
           </div>
-          <button onClick={handleResolveDoubt}>Resolve Doubt</button>
           <div>
-            <button onClick={recording ? handleAudioStop : handleAudioStart}>
-              {recording ? "Stop Recording" : "Start Recording"}
-            </button>
-            {audioURL && (
-              <audio controls>
-                <source src={audioURL} type="audio/mp3" />
-                Your browser does not support the audio element.
-              </audio>
-            )}
+            <label>Upload your image (Max 1MB):</label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
+          <div>
+            <label>Record audio (Max 1 minute):</label>
+            {!recording ? (
+              <button onClick={handleAudioStart}>Record Audio</button>
+            ) : (
+              <button onClick={handleAudioStop}>Stop Recording</button>
+            )}
+            {audioURL && <audio controls src={audioURL} />}
+          </div>
+          <button onClick={handleResolveDoubt}>Resolve Doubt</button>
         </div>
 
         <div className="post-doubt-section">
           <h2>Doubt Section</h2>
-          {allDoubts.length === 0 ? (
+          {doubts.length === 0 ? (
             <p>No doubts posted yet.</p>
           ) : (
-            allDoubts.map((doubt) => (
+            doubts.map((doubt) => (
               <div
                 key={doubt.id}
                 className="doubt-item"
@@ -297,9 +302,7 @@ const DoubtPage = () => {
                       }
                     }}
                   >
-                    {doubt.status === "Unresolved"
-                      ? "Expand"
-                      : "Collapse"}
+                    {doubt.status === "Unresolved" ? "Expand" : "Collapse"}
                   </button>
                 </div>
                 <div
@@ -307,44 +310,63 @@ const DoubtPage = () => {
                   style={{ display: "none" }}
                   className="doubt-content"
                 >
-                  <p>{renderTextWithLinks(doubt.description)}</p>
-                  {doubt.imageURL && (
+                  <p>{doubt.text}</p>
+                  {doubt.image && (
                     <img
-                      src={doubt.imageURL}
+                      src={doubt.image}
                       alt="Doubt"
-                      onClick={() => handleImageClick(doubt.imageURL)}
+                      className="doubt-image"
+                      onClick={() => setSelectedImage(doubt.image)}
                     />
                   )}
-                  {doubt.audioURL && (
-                    <audio controls>
-                      <source src={doubt.audioURL} type="audio/mp3" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  )}
+                  {doubt.audio && <audio controls src={doubt.audio} />}
                   <div>
-                    <span>Submitted by: {doubt.uid}</span>
+                    <p>
+                      Submitted by: {doubt.submittedBy || "Unknown"} (
+                      {doubt.phone || "Unknown"})
+                    </p>
+                    <p>
+                      Submitted on:{" "}
+                      {new Date(doubt.timestamp?.toDate()).toLocaleString()}
+                    </p>
+                    <p>Status: {doubt.status}</p>
                   </div>
-                  {doubt.status === "Resolved" && (
-                    <div className="teacher-comments">
-                      <h4>Comments by Teacher:</h4>
-                      <p>{doubt.teacherComments?.text}</p>
+                  {doubt.status === "Unresolved" ? (
+                    <button
+                      onClick={() =>
+                        handleDeleteDoubt(doubt.id, doubt.image, doubt.audio)
+                      }
+                    >
+                      Delete Doubt
+                    </button>
+                  ) : (
+                    <div>
+                      <h2>Comments by Teacher:</h2>
+                      <p>{doubt.teacherComments?.text || "No comments yet"}</p>
+                      {doubt.teacherComments?.image && (
+                        <img
+                          src={doubt.teacherComments.image}
+                          alt="Teacher Comment"
+                          className="doubt-image"
+                          onClick={() => setSelectedImage(doubt.teacherComments.image)}
+                        />
+                      )}
+                      {doubt.teacherComments?.audio && (
+                        <audio controls src={doubt.teacherComments.audio} />
+                      )}
                     </div>
                   )}
-                  <button onClick={() => handleDeleteDoubt(doubt.id, doubt.imageURL, doubt.audioURL)}>
-                    Delete
-                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
-
-        {selectedImage && (
-          <div className="image-overlay" onClick={handleCloseImage}>
-            <img src={selectedImage} alt="Doubt" />
-          </div>
-        )}
       </div>
+      {selectedImage && (
+        <div className="image-modal" onClick={() => setSelectedImage(null)}>
+          <img src={selectedImage} alt="Doubt" className="modal-image" />
+        </div>
+      )}
     </div>
   );
 };
